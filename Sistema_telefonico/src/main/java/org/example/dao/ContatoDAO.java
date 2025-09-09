@@ -93,4 +93,36 @@ public class ContatoDAO {
         return contatos;
     }
 
+
+    // ATUALIZAR DADOS DE UM CONTATO (telefone, email, observação)
+    public void atualizarDados(Contato contato) throws SQLException {
+        String sql = "UPDATE contato SET telefone = ?, email = ?, observacao = ? WHERE id = ?";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, contato.getTelefone());
+            stmt.setString(2, contato.getEmail());
+            stmt.setString(3, contato.getObservacao());
+            stmt.setInt(4, contato.getId());
+
+            stmt.executeUpdate();
+        }
+    }
+
+
+    // REMOVER CONTATO
+    public void removerContato(int id) throws SQLException{
+        String query = "DELETE FROM contato WHERE id = ?";
+
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setInt(1,id);
+            stmt.executeUpdate();
+
+        }
+    }
+
+
 }

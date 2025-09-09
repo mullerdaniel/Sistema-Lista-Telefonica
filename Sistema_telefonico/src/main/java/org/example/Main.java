@@ -1,10 +1,13 @@
 package org.example;
 
 import jdk.jshell.execution.Util;
+import org.example.Database.Conexao;
 import org.example.Model.Contato;
 import org.example.Utils.Utils;
 import org.example.dao.ContatoDAO;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ public class Main {
         System.out.println("4. Atualizar dados de um contato (telefone, email, observação).");
         System.out.println("5. Remover contato.");
         System.out.println("6. Sair do sistema.");
+        System.out.println("\nOpção: ");
 
         int opcao = input.nextInt();
         input.nextLine();
@@ -48,6 +52,16 @@ public class Main {
                 break;
             }
 
+            case 4:{
+                atualizarDados();
+                break;
+            }
+
+            case 5:{
+                removerCotato();
+                break;
+            }
+
             case 6:{
                 sair = true;
                 break;
@@ -64,16 +78,12 @@ public class Main {
     // CADASTRAR CONTATO
     public static void cadastrarContado(){
         System.out.println ("\n\n--------Cadastrar Contato--------\n\n");
-
         System.out.println ("\nDigite o nome do contato: ");
         String nome = input.nextLine();
-
         System.out.println ("Digite o telefone do contato: ");
         String telefone = input.nextLine();
-
         System.out.println ("Digite o email do contato: ");
         String email = input.nextLine();
-
         System.out.println ("Digite a oberservação sobre o contato: ");
         String observacao = input.nextLine();
 
@@ -85,7 +95,7 @@ public class Main {
             contatoDao.inserirContato(contato);
 
         }catch (SQLException e) {
-            System.out.println ("Ocorreu um erro no banco de dados!");
+            System.out.println ("\nOcorreu um erro no banco de dados!");
             e.printStackTrace();
         }
     }
@@ -102,7 +112,7 @@ public class Main {
             contatos = contatoDao.listarContato();
 
         }catch (SQLException e) {
-            System.out.println ("Ocorreu um erro no banco de dados!");
+            System.out.println ("\nOcorreu um erro no banco de dados!");
             e.printStackTrace();
         }
         Utils.exibirContatos(contatos);
@@ -122,10 +132,64 @@ public class Main {
                 contatos = contatoDAO.buscarContatoPornNome(nome);
 
             }catch (SQLException e) {
-                System.out.println ("Ocorreu um erro no banco de dados!");
+                System.out.println ("\nOcorreu um erro no banco de dados!");
                 e.printStackTrace();
             }
             Utils.exibirContatos(contatos);
         }
 
+
+    // ATUALIZAR DADOS (telefone, email, observação)
+    public static void atualizarDados() {
+        System.out.println("\n\n--------Atualizar Contato--------\n\n");
+        System.out.println("Digite o ID do contato que deseja atualizar: ");
+        int id = input.nextInt();
+        input.nextLine();
+        System.out.println("Digite o novo telefone: ");
+        String novoTelefone = input.nextLine();
+        System.out.println("Digite o novo email: ");
+        String novoEmail = input.nextLine();
+        System.out.println("Digite a nova observação: ");
+        String novaObservacao = input.nextLine();
+
+        // CRIA O CONTATO E DEFINE O ID PARA ATUALIZAÇÃO
+        Contato contato = new Contato("", novoTelefone, novoEmail, novaObservacao);
+        contato.setId(id);
+
+        var contatoDao = new ContatoDAO();
+
+        // TRATAMENTO DE ERRO
+        try {
+            contatoDao.atualizarDados(contato);
+            System.out.println("Contato atualizado com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar o contato: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
+
+    // REMOVER CONTATO
+    public static void removerCotato() {
+        System.out.println("\n\n--------Deletar Contato--------\n\n");
+        listarContatos();
+        System.out.println("\n\nDigite o ID do contato que deseja deletar");
+        int idContato = input.nextInt();
+
+        var contatoDao = new ContatoDAO();
+
+        try {
+            contatoDao.removerContato(idContato);
+            System.out.println("Contato deletado com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Ocorreu um erro ao deletar o contato: " + e.getMessage());
+        }
+    }
+
+
+
+
+
+}

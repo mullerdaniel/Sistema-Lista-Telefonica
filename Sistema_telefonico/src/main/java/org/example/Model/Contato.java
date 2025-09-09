@@ -1,8 +1,8 @@
 package org.example.Model;
 
 public class Contato {
-    private int id;
 
+    private int id;
     private String nome;
     private String telefone;
     private String email;
